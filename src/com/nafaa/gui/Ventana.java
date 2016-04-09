@@ -99,8 +99,7 @@ public class Ventana extends JFrame implements MouseListener,ActionListener {
 	}
 	
 	private void initDatabase() {
-		database = new Database();
-		database.conectar("jdbc:mysql://localhost:3306/mydb","root", "159951pro");
+		Database.getDatabase().conectar("jdbc:mysql://localhost:3306/mydb","root", "159951pro");
 	}
 
 	private void initPanels() {
@@ -295,7 +294,7 @@ public class Ventana extends JFrame implements MouseListener,ActionListener {
 			} catch (NoSuchAlgorithmException e1) {
 				e1.printStackTrace();
 			}
-			database.queryDDL("INSERT INTO mydb.Usuario (tipoUsuario,nombre,apellidos,fechaNacimiento,sexo,contraseña,direccion,telefono,email,usuario) VALUES ('Paciente','"+nuevoRegistro.getNombre().getText()+"','"+nuevoRegistro.getApellidos().getText()+"','1994-02-28',"
+			Database.getDatabase().queryDDL("INSERT INTO mydb.Usuario (tipoUsuario,nombre,apellidos,fechaNacimiento,sexo,contraseña,direccion,telefono,email,usuario) VALUES ('Paciente','"+nuevoRegistro.getNombre().getText()+"','"+nuevoRegistro.getApellidos().getText()+"','1994-02-28',"
 					+ "'Masculino','"+hashed+"','"+nuevoRegistro.getDireccion().getText()+"','"+nuevoRegistro.getTelefono().getText()+"','"+nuevoRegistro.getEmail().getText()+"','"+nuevoRegistro.getUsuario().getText()+"');");
 			remove(nuevoRegistro);
             lbleresNuevoRegistrate.setVisible(true);
@@ -318,10 +317,10 @@ public class Ventana extends JFrame implements MouseListener,ActionListener {
 					e1.printStackTrace();
 				}
 				
-				int count = database.queryDMLSize("SELECT usuario,contraseña FROM mydb.Usuario WHERE usuario='"+usuario.getText()+"' AND contraseña='"+hash+"'");
-				String nombre = database.queryDMLExtract("nombre","SELECT * FROM mydb.Usuario WHERE usuario='"+usuario.getText()+"' AND contraseña='"+hash+"'");
-				String apellidos = database.queryDMLExtract("apellidos","SELECT * FROM mydb.Usuario WHERE usuario='"+usuario.getText()+"' AND contraseña='"+hash+"'");
-				String tipoUsuario = database.queryDMLExtract("tipoUsuario","SELECT * FROM mydb.Usuario WHERE usuario='"+usuario.getText()+"' AND contraseña='"+hash+"'");
+				int count = Database.getDatabase().queryDMLSize("SELECT usuario,contraseña FROM mydb.Usuario WHERE usuario='"+usuario.getText()+"' AND contraseña='"+hash+"'");
+				String nombre = Database.getDatabase().queryDMLExtract("nombre","SELECT * FROM mydb.Usuario WHERE usuario='"+usuario.getText()+"' AND contraseña='"+hash+"'");
+				String apellidos = Database.getDatabase().queryDMLExtract("apellidos","SELECT * FROM mydb.Usuario WHERE usuario='"+usuario.getText()+"' AND contraseña='"+hash+"'");
+				String tipoUsuario = Database.getDatabase().queryDMLExtract("tipoUsuario","SELECT * FROM mydb.Usuario WHERE usuario='"+usuario.getText()+"' AND contraseña='"+hash+"'");
 			if(count > 0){	
 			client = new Client();
 			principal.getLblBienvenido().setText("Bienvenido "+tipoUsuario+", "+nombre+" "+apellidos);

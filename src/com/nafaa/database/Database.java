@@ -9,15 +9,29 @@ import java.sql.Statement;
 
 public class Database {
 	
-	private Connection connection = null;
-	
-	public Database(){
+	static{
 		try {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
-			return;
 		}
+	}
+	
+	private Connection connection = null;
+	
+	public static final Database database = new Database();
+	
+	/**
+	 * Database instance.
+	 * @return The instance.
+	 */
+	public static Database getDatabase(){
+		return database;
+	}
+	
+	
+	
+	private Database(){
 	}
 	
 	/**
