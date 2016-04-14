@@ -1,9 +1,17 @@
 package com.nafaa.gui;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Image;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
@@ -19,12 +27,15 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JComboBox;
 import javax.swing.DefaultComboBoxModel;
+
+import com.nafaa.database.Database;
+import com.nafaa.util.Secure;
 /**
  * GUI para el registro de nuevos Usuarios.
  * @author txsec
  *
  */
-public class NuevoRegistro extends JPanel {
+public class NuevoRegistro extends JPanel implements ActionListener,MouseListener {
 	/**
 	 * 
 	 */
@@ -36,13 +47,14 @@ public class NuevoRegistro extends JPanel {
 	private JTextField usuario;
 	private JTextField email;
 	private JPasswordField confirmarContraseña;
-	private JLabel lblRegresar;
+	private JLabel lbl;
 	private JButton btnNewButton;
 	private JButton btnNewButton_1;
 	private JTextField apellidos;
 	private JTextField nombre;
 	private JLabel error;
-	
+	private JLabel lblRegresar;
+	private Ventana ventana;
 	
 	public JPasswordField getConfirmarContraseña() {
 		return confirmarContraseña;
@@ -88,29 +100,39 @@ public class NuevoRegistro extends JPanel {
 	}
 
 
-	public JLabel getLblRegresar() {
-		return lblRegresar;
+	public JLabel getLbl() {
+		return lbl;
 	}
 
 
-	public void setLblRegresar(JLabel lblRegresar) {
+	public void setLbl(JLabel lblRegresar) {
 		this.lblRegresar = lblRegresar;
 	}
 
+	public NuevoRegistro(){
+		initComponentes();
+	}
 
 	/**
 	 * Create the panel.
 	 */
-	public NuevoRegistro() {
-		
+	public NuevoRegistro(Ventana ventana) {
+		this.ventana = ventana;
+		initComponentes();
+
+	}
+	
+	private void initComponentes(){
 		btnNewButton_1 = new JButton("Registrar");
 		btnNewButton_1.setBackground(new Color(22, 137, 195));
 		btnNewButton_1.setForeground(Color.WHITE);
+		btnNewButton_1.addActionListener(this);
 		
 		nombre = new JTextField();
 		nombre.setColumns(10);
 		
 		lblRegresar = new JLabel("Regresar");
+		lblRegresar.addMouseListener(this);
 		
 		JComboBox comboBox = new JComboBox();
 		comboBox.setModel(new DefaultComboBoxModel(new String[] {"Masculino", "Femenino"}));
@@ -259,5 +281,78 @@ public class NuevoRegistro extends JPanel {
 
 	public JLabel getError() {
 		return error;
+	}
+
+	public JLabel getLblRegresar() {
+		return lblRegresar;
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+		if(e.getSource() == getLblRegresar()){
+            ventana.remove(this);
+            ventana.getLbleresNuevoRegistrate().setVisible(true);
+            ventana.getContentPane().add(ventana.getPanel(),BorderLayout.CENTER);
+            ventana.revalidate();
+            ventana.repaint();
+		} 		
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+		if(e.getSource() == getLblRegresar()){
+			getLblRegresar().setCursor(new Cursor(Cursor.HAND_CURSOR));
+		}
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == getBtnNewButton_1()){
+			
+			if(!getNombre().getText().isEmpty() && !getApellidos().getText().isEmpty() && !getDireccion().getText().isEmpty()
+					&& !getUsuario().getText().isEmpty() && !getTelefono().getText().isEmpty() && !getEmail().getText().isEmpty() 
+					&& !getContraseña().getText().isEmpty() &&
+					!getConfirmarContraseña().getText().isEmpty()){
+			if(getContraseña().getText().equals(getConfirmarContraseña().getText())){
+			String hashed = "";
+			try {
+				hashed = Secure.getHashCodeFromString(getContraseña().getText());
+			} catch (NoSuchAlgorithmException e1) {
+				e1.printStackTrace();
+			}
+			Database.getDatabase().queryDDL("INSERT INTO mydb.Usuario (tipoUsuario,nombre,apellidos,fechaNacimiento,sexo,contraseña,direccion,telefono,email,usuario) VALUES ('Paciente','"+getNombre().getText()+"','"+getApellidos().getText()+"','1994-02-28',"
+					+ "'Masculino','"+hashed+"','"+getDireccion().getText()+"','"+getTelefono().getText()+"','"+getEmail().getText()+"','"+getUsuario().getText()+"');");
+			ventana.remove(this);
+            ventana.getLbleresNuevoRegistrate().setVisible(true);
+            ventana.getContentPane().add(ventana.getPanel(),BorderLayout.CENTER);
+            ventana.revalidate();
+            ventana.repaint();
+            ventana.getLblUsuarioRegistradoCon().setText("Usuario registrado con exito.");
+			} else{
+				getError().setText("Las contraseñas no coinciden.");
+			}
+		} else{
+			getError().setText("Por favor llena todos los campos.");
+		}
+			}  
+		
 	}
 }

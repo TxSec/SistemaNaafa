@@ -9,13 +9,21 @@ import javax.swing.JTable;
 import javax.swing.JScrollPane;
 import javax.swing.table.DefaultTableModel;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dialog;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import javax.swing.JLabel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JTextField;
+
+import com.nafaa.database.Database;
+import com.nafaa.database.Query;
 
 public class ModificarUsuarios extends JPanel implements ActionListener {
 	/**
@@ -27,8 +35,10 @@ public class ModificarUsuarios extends JPanel implements ActionListener {
 	private JButton lblNewLabel_1;
 	private JButton lblNewLabel_2;
 	private ModificarUsuarioJDialog dialog;
+	private JDialog modificarAdmin;
 	private JTable table_1;
-	
+	private Map<Integer, List<String>> data;
+	private DefaultTableModel dtm;
 	
 	/**
 	 * Create the panel.
@@ -48,10 +58,12 @@ public class ModificarUsuarios extends JPanel implements ActionListener {
 		lblNewLabel.setBackground(new Color(154, 205, 50));
 		
 		lblNewLabel_1 = new JButton("Editar");
+		lblNewLabel_1.addActionListener(this);
 		lblNewLabel_1.setBackground(new Color(100, 149, 237));
 		lblNewLabel_1.setForeground(new Color(255, 255, 255));
 		
 		lblNewLabel_2 = new JButton("Eliminar");
+		lblNewLabel_2.addActionListener(this);
 		lblNewLabel_2.setBackground(new Color(204, 51, 0));
 		lblNewLabel_2.setForeground(new Color(255, 255, 255));
 		
@@ -118,7 +130,7 @@ public class ModificarUsuarios extends JPanel implements ActionListener {
 
     //table.setFillsViewportHeight(true);
     //table.setSurrendersFocusOnKeystroke(true);
-    DefaultTableModel dtm = new DefaultTableModel(0, 0);
+    dtm = new DefaultTableModel(0, 0);
     String header[] = new String[] { "#", "Nombre", "Apellidos",
             "Usuario","Grupo","Ultima Conexión"};
     dtm.setColumnIdentifiers(header);
@@ -127,23 +139,51 @@ public class ModificarUsuarios extends JPanel implements ActionListener {
     table_1.getTableHeader().setReorderingAllowed(false);
     table_1.getTableHeader().setResizingAllowed(false);
     //table.setCellSelectionEnabled(false);
-    dtm.addRow(new Object[]{null,"TEXT","TEXT","TEXT","SOON.","SOON..."});
-
-	
-
+    data = Database.getDatabase().queryDMLExtraAny(new Query("SELECT nombre,apellidos,usuario,tipoUsuario FROM mydb.Usuario"),"nombre","apellidos","usuario","tipoUsuario");
+	for(int i = 0; i < data.size();i++){
+			dtm.addRow(new Object[]{false,data.get(i).get(0),data.get(i).get(1),data.get(i).get(2),data.get(i).get(3),"SOON..."});
+	}
 
 	}
 
 	private void loadDialogs() {
-		dialog = new ModificarUsuarioJDialog();		
+		dialog = new ModificarUsuarioJDialog(this);	
+		modificarAdmin = new JDialog();
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == lblNewLabel){
+		if(e.getSource() == lblNewLabel_1){
+			//Database.getDatabase().easyQuery("UPDATE FROM mydb.Usuario WHERE nombre='"+dtm.getValueAt(i, 1)+"'");
+			modificarAdmin.setModalityType(Dialog.ModalityType.MODELESS);
+			modificarAdmin.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+			modificarAdmin.setBounds(100, 100, 500, 500);
+			modificarAdmin.setVisible(true);
+			modificarAdmin.getContentPane().setLayout(new BorderLayout(0, 0));
+			modificarAdmin.getContentPane().add(new ModificarAdmin(this),BorderLayout.CENTER);
+		} else if(e.getSource() == lblNewLabel_2){
+			boolean value;
+			for(int i = 0; i < data.size();i++){
+			value = (boolean) dtm.getValueAt(i, 0);
+			if(value){
+				Database.getDatabase().easyQuery("DELETE FROM mydb.Usuario WHERE nombre='"+dtm.getValueAt(i, 1)+"'");
+				dtm.removeRow(i);
+				
+				}
+			}
+
+		} else if(e.getSource() == lblNewLabel){
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 			dialog.setVisible(true);
 		}
 		
+	}
+
+	public DefaultTableModel getDtm() {
+		return dtm;
+	}
+
+	public void setDtm(DefaultTableModel dtm) {
+		this.dtm = dtm;
 	}
 }

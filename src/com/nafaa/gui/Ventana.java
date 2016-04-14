@@ -105,9 +105,7 @@ public class Ventana extends JFrame implements MouseListener,ActionListener {
 	private void initPanels() {
 		principal = new Principal();
 		principal.getModificarUsuariso().addMouseListener(this);
-		nuevoRegistro = new NuevoRegistro();
-		nuevoRegistro.getLblRegresar().addMouseListener(this);
-		nuevoRegistro.getBtnNewButton_1().addActionListener(this);
+		nuevoRegistro = new NuevoRegistro(this);
 		olvidaContraseña = new OlvidaContraseña();
 		olvidaContraseña.getLblReg().addMouseListener(this);
 		
@@ -120,7 +118,7 @@ public class Ventana extends JFrame implements MouseListener,ActionListener {
 		contentPane.setBorder(new EmptyBorder(0, 180, 30, 180));
 		setContentPane(contentPane);
 		
-		panel = new JPanel();
+		setPanel(new JPanel());
 		
 		JCheckBox checkBox = new JCheckBox("Recordarme");
 		
@@ -152,10 +150,10 @@ public class Ventana extends JFrame implements MouseListener,ActionListener {
 			e1.printStackTrace();
 		}
 		
-		lblUsuarioRegistradoCon = new JLabel("");
+		setLblUsuarioRegistradoCon(new JLabel(""));
 		
 		
-		GroupLayout gl_panel = new GroupLayout(panel);
+		GroupLayout gl_panel = new GroupLayout(getPanel());
 		gl_panel.setHorizontalGroup(
 			gl_panel.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_panel.createSequentialGroup()
@@ -168,7 +166,7 @@ public class Ventana extends JFrame implements MouseListener,ActionListener {
 					.addGap(109)
 					.addGroup(gl_panel.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_panel.createSequentialGroup()
-							.addComponent(lblUsuarioRegistradoCon)
+							.addComponent(getLblUsuarioRegistradoCon())
 							.addContainerGap())
 						.addGroup(gl_panel.createSequentialGroup()
 							.addGroup(gl_panel.createParallelGroup(Alignment.TRAILING)
@@ -187,7 +185,7 @@ public class Ventana extends JFrame implements MouseListener,ActionListener {
 					.addGap(51)
 					.addComponent(button_2, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE)
 					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(lblUsuarioRegistradoCon)
+					.addComponent(getLblUsuarioRegistradoCon())
 					.addGap(19)
 					.addComponent(usuario, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)
 					.addGap(18)
@@ -200,47 +198,41 @@ public class Ventana extends JFrame implements MouseListener,ActionListener {
 						.addComponent(label))
 					.addContainerGap(14, Short.MAX_VALUE))
 		);
-		panel.setLayout(gl_panel);
+		getPanel().setLayout(gl_panel);
 		
 		lblSistemaMdicoNaafa = new JLabel("Sistema Médico NAAFA");
 		lblSistemaMdicoNaafa.setBorder(new EmptyBorder(13,13,13,13));
 		lblSistemaMdicoNaafa.setHorizontalAlignment(SwingConstants.CENTER);
 		lblSistemaMdicoNaafa.setFont(new Font("Dialog", Font.BOLD, 21));
 		
-		lbleresNuevoRegistrate = new JLabel("¿Eres nuevo? Registrate.");
-		lbleresNuevoRegistrate.setForeground(new Color(0, 102, 204));
-		lbleresNuevoRegistrate.setBorder(new EmptyBorder(13,0,13,0));
-		lbleresNuevoRegistrate.setHorizontalAlignment(SwingConstants.CENTER);
-		lbleresNuevoRegistrate.addMouseListener(this);
+		setLbleresNuevoRegistrate(new JLabel("¿Eres nuevo? Registrate."));
+		getLbleresNuevoRegistrate().setForeground(new Color(0, 102, 204));
+		getLbleresNuevoRegistrate().setBorder(new EmptyBorder(13,0,13,0));
+		getLbleresNuevoRegistrate().setHorizontalAlignment(SwingConstants.CENTER);
+		getLbleresNuevoRegistrate().addMouseListener(this);
 		contentPane.setLayout(new BorderLayout(0, 0));
 		contentPane.add(lblSistemaMdicoNaafa, BorderLayout.NORTH);
-		contentPane.add(lbleresNuevoRegistrate, BorderLayout.SOUTH);
-		contentPane.add(panel, BorderLayout.CENTER);		
+		contentPane.add(getLbleresNuevoRegistrate(), BorderLayout.SOUTH);
+		contentPane.add(getPanel(), BorderLayout.CENTER);		
 	}
 
 	public void mouseClicked(MouseEvent e) {
-		if(e.getSource() == lbleresNuevoRegistrate){
-            remove(panel);
-            lbleresNuevoRegistrate.setVisible(false);
+		if(e.getSource() == getLbleresNuevoRegistrate()){
+            remove(getPanel());
+            getLbleresNuevoRegistrate().setVisible(false);
             getContentPane().add(nuevoRegistro,BorderLayout.CENTER);
             revalidate();
             repaint();
 		} else if(e.getSource() == label){
-            remove(panel);
-            lbleresNuevoRegistrate.setVisible(false);
+            remove(getPanel());
+            getLbleresNuevoRegistrate().setVisible(false);
             getContentPane().add(olvidaContraseña,BorderLayout.CENTER);
-            revalidate();
-            repaint();
-		} else if(e.getSource() == nuevoRegistro.getLblRegresar()){
-            remove(nuevoRegistro);
-            lbleresNuevoRegistrate.setVisible(true);
-            getContentPane().add(panel,BorderLayout.CENTER);
             revalidate();
             repaint();
 		} else if(e.getSource() == olvidaContraseña.getLblReg()){
             remove(olvidaContraseña);
-            lbleresNuevoRegistrate.setVisible(true);
-            getContentPane().add(panel,BorderLayout.CENTER);
+            getLbleresNuevoRegistrate().setVisible(true);
+            getContentPane().add(getPanel(),BorderLayout.CENTER);
             revalidate();
             repaint();
 		} else if(e.getSource() == principal.getModificarUsuariso()){
@@ -258,8 +250,8 @@ public class Ventana extends JFrame implements MouseListener,ActionListener {
 	}
 
 	public void mouseEntered(MouseEvent e) {
-		if(e.getSource() == lbleresNuevoRegistrate){
-			lbleresNuevoRegistrate.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		if(e.getSource() == getLbleresNuevoRegistrate()){
+			getLbleresNuevoRegistrate().setCursor(new Cursor(Cursor.HAND_CURSOR));
 		}
 		if(e.getSource() == label){
 			label.setCursor(new Cursor(Cursor.HAND_CURSOR));
@@ -271,9 +263,7 @@ public class Ventana extends JFrame implements MouseListener,ActionListener {
 			attributes.put(TextAttribute.UNDERLINE, TextAttribute.UNDERLINE_ON);
 			olvidaContraseña.getLblReg().setFont(font.deriveFont(attributes));
 		}
-		if(e.getSource() == nuevoRegistro.getLblRegresar()){
-			nuevoRegistro.getLblRegresar().setCursor(new Cursor(Cursor.HAND_CURSOR));
-		}
+
 		if(e.getSource() == principal.getModificarUsuariso()){
 			principal.getModificarUsuariso().setCursor(new Cursor(Cursor.HAND_CURSOR));
 		}
@@ -282,33 +272,7 @@ public class Ventana extends JFrame implements MouseListener,ActionListener {
 	public void mouseExited(MouseEvent e) {}
 
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == nuevoRegistro.getBtnNewButton_1()){
-			
-			if(!nuevoRegistro.getNombre().getText().isEmpty() && !nuevoRegistro.getApellidos().getText().isEmpty() && !nuevoRegistro.getDireccion().getText().isEmpty()
-					&& !nuevoRegistro.getUsuario().getText().isEmpty() && !nuevoRegistro.getTelefono().getText().isEmpty() && !nuevoRegistro.getEmail().getText().isEmpty() && !nuevoRegistro.getContraseña().getText().isEmpty() &&
-					!nuevoRegistro.getConfirmarContraseña().getText().isEmpty()){
-			if(nuevoRegistro.getContraseña().getText().equals(nuevoRegistro.getConfirmarContraseña().getText())){
-			String hashed = "";
-			try {
-				hashed = Secure.getHashCodeFromString(nuevoRegistro.getContraseña().getText());
-			} catch (NoSuchAlgorithmException e1) {
-				e1.printStackTrace();
-			}
-			Database.getDatabase().queryDDL("INSERT INTO mydb.Usuario (tipoUsuario,nombre,apellidos,fechaNacimiento,sexo,contraseña,direccion,telefono,email,usuario) VALUES ('Paciente','"+nuevoRegistro.getNombre().getText()+"','"+nuevoRegistro.getApellidos().getText()+"','1994-02-28',"
-					+ "'Masculino','"+hashed+"','"+nuevoRegistro.getDireccion().getText()+"','"+nuevoRegistro.getTelefono().getText()+"','"+nuevoRegistro.getEmail().getText()+"','"+nuevoRegistro.getUsuario().getText()+"');");
-			remove(nuevoRegistro);
-            lbleresNuevoRegistrate.setVisible(true);
-            getContentPane().add(panel,BorderLayout.CENTER);
-            revalidate();
-            repaint();
-            lblUsuarioRegistradoCon.setText("Usuario registrado con exito.");
-			} else{
-				nuevoRegistro.getError().setText("Las contraseñas no coinciden.");
-			}
-		} else{
-			nuevoRegistro.getError().setText("Por favor llena todos los campos.");
-		}
-			}  else if(e.getSource() == button_1){
+			if(e.getSource() == button_1){
 				
 				String hash = "";
 				try {
@@ -324,8 +288,8 @@ public class Ventana extends JFrame implements MouseListener,ActionListener {
 			if(count > 0){	
 			client = new Client();
 			principal.getLblBienvenido().setText("Bienvenido "+tipoUsuario+", "+nombre+" "+apellidos);
-            remove(panel);
-            lbleresNuevoRegistrate.setVisible(false);
+            remove(getPanel());
+            getLbleresNuevoRegistrate().setVisible(false);
             lblSistemaMdicoNaafa.setVisible(false); 
             contentPane.setBorder(new EmptyBorder(0, 0, 0, 0));
             setLocationRelativeTo(null);
@@ -355,9 +319,33 @@ public class Ventana extends JFrame implements MouseListener,ActionListener {
             revalidate();
             repaint();
 			} else{
-				lblUsuarioRegistradoCon.setText("Usuario o contraseña invalida");
-				lblUsuarioRegistradoCon.setForeground(Color.red);
+				getLblUsuarioRegistradoCon().setText("Usuario o contraseña invalida");
+				getLblUsuarioRegistradoCon().setForeground(Color.red);
 			}
 		}
+	}
+
+	public JPanel getPanel() {
+		return panel;
+	}
+
+	public void setPanel(JPanel panel) {
+		this.panel = panel;
+	}
+
+	public JLabel getLbleresNuevoRegistrate() {
+		return lbleresNuevoRegistrate;
+	}
+
+	public void setLbleresNuevoRegistrate(JLabel lbleresNuevoRegistrate) {
+		this.lbleresNuevoRegistrate = lbleresNuevoRegistrate;
+	}
+
+	public JLabel getLblUsuarioRegistradoCon() {
+		return lblUsuarioRegistradoCon;
+	}
+
+	public void setLblUsuarioRegistradoCon(JLabel lblUsuarioRegistradoCon) {
+		this.lblUsuarioRegistradoCon = lblUsuarioRegistradoCon;
 	}
 }

@@ -5,6 +5,10 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 public class Database {
@@ -62,7 +66,7 @@ public class Database {
 	public int queryDMLSize(String query){
 		int size = 0;
 		try {
-			Statement stmt = connection.createStatement();
+		Statement stmt = connection.createStatement();
 			ResultSet rs = stmt.executeQuery(query);
 			while(rs.next()){
 				size++;
@@ -88,8 +92,34 @@ public class Database {
 		return data;
 	}
 	
-	public String queryDMLExtraAny(Query query,String... fields){
-		return null;
+	public void easyQuery(String query){
+		Statement stmt;
+		try {
+			stmt = connection.createStatement();
+			stmt.execute(query);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public Map<Integer, List<String>> queryDMLExtraAny(Query query,String... fields){
+		Map<Integer, List<String>> list = new HashMap<Integer,List<String>>(); 
+		try {
+			Statement stmt = connection.createStatement();
+			ResultSet rs = stmt.executeQuery(query.getQuery());
+			int j = 0;
+			while(rs.next()){
+				List<String> arrayList = new ArrayList<String>();
+				for(int i = 0 ; i < fields.length;i++)
+					arrayList.add(rs.getString(fields[i]));
+					list.put(j, arrayList);
+				j++;
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return list;
 		
 	}
 

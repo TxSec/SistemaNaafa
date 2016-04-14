@@ -11,10 +11,10 @@ public class Client {
 	private ClientBootstrap bootstrap;
 	
 	public Client(){
-		bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory
-				(Executors.newCachedThreadPool(),Executors.newCachedThreadPool()));
-		bootstrap.setPipelineFactory(new NaafaPipelineClient());
-		bootstrap.connect(new InetSocketAddress("localhost",43594));
+		//bootstrap = new ClientBootstrap(new NioClientSocketChannelFactory
+		//(Executors.newCachedThreadPool(),Executors.newCachedThreadPool()));
+		//bootstrap.setPipelineFactory(new NaafaPipelineClient());
+		//bootstrap.connect(new InetSocketAddress("localhost",43594));
 	}
 
 }
